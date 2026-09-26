@@ -59,6 +59,69 @@ The length of the word 'engineering' is 11.
 Multiplied by 3, the result is 33.
 ```
 
+## Switching to a different LLM provider
+
+LangChain abstracts the model behind a common interface — the agent, tools,
+and orchestration logic (everything except the `llm =` line) stay identical
+regardless of provider. Only two things change per provider: the **import**
+and the **package to install**.
+
+### Anthropic (Claude)
+
+**Prerequisite:** an Anthropic API key from
+[console.anthropic.com](https://console.anthropic.com), with billing/credits
+added — note this is separate from a claude.ai chat subscription, which does
+NOT include API access.
+
+```bash
+pip install langchain-anthropic
+export ANTHROPIC_API_KEY="your-key-here"
+```
+
+```python
+from langchain_anthropic import ChatAnthropic
+
+llm = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+```
+
+### OpenAI (GPT)
+
+**Prerequisite:** an OpenAI API key from
+[platform.openai.com](https://platform.openai.com), with billing/credits
+added.
+
+```bash
+pip install langchain-openai
+export OPENAI_API_KEY="your-key-here"
+```
+
+```python
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
+```
+
+### Google (Gemini) — what this module uses by default
+
+**Prerequisite:** a free Gemini API key from
+[aistudio.google.com](https://aistudio.google.com) — no billing required for
+the free tier, though it carries rate limits.
+
+```bash
+pip install langchain-google-genai
+export GOOGLE_API_KEY="your-key-here"
+```
+
+```python
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash", temperature=0)
+```
+
+**Everything below the `llm =` line — `tools`, `create_agent(llm, tools)`,
+`.invoke()` — needs no changes at all when switching providers.** This is
+the actual value LangChain provides: provider-agnostic agent logic.
+
 ## Notes on framework/model churn
 This code targets **LangChain 1.x**, which consolidated agent construction
 around a single `create_agent` function (built on LangGraph internally),
